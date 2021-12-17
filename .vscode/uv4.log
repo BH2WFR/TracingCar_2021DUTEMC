@@ -1,0 +1,23 @@
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'MyTarget'
+compiling Motor.c...
+Drivers\Motor.c(756): error:  #136: struct "<unnamed>"  has no field "enable"
+  		if(Sensor.enable == true){	// ??????????
+Drivers\Motor.c: 0 warnings, 1 error
+compiling LineTracing.c...
+CONTEST\Mode\LineTracing.c(66): warning:  #177-D: variable "shabi"  was declared but never referenced
+  	uint16_t shabi = 0;
+CONTEST\Mode\LineTracing.c: 1 warning, 0 errors
+compiling TracingSensor.c...
+Drivers\TracingSensor.c(336): warning:  #177-D: variable "val_bit"  was declared but never referenced
+  	uint8_t val_bit = 0;
+Drivers\TracingSensor.c: 1 warning, 0 errors
+compiling Interface.c...
+CONTEST\Interface.c(107): warning:  #167-D: argument of type "const Beep_note_typedef *" is incompatible with parameter of type "Beep_note_typedef *"
+  	Beep_PlayMusic(music_ChangeMode);
+CONTEST\Interface.c(86): warning:  #177-D: function "GetModeString"  was declared but never referenced
+  static void GetModeString(char* p_str)
+CONTEST\Interface.c: 2 warnings, 0 errors
+".\Objects\myProject_MSP432P401R.axf" - 1 Error(s), 4 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:02
