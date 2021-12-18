@@ -202,7 +202,7 @@ void Interface_SwitchMode(uint8_t mode)
 			// Key_eventFunctionVector[KEY_EVENT_PRESS][1] = NULL;
 			// Key_eventFunctionVector[KEY_EVENT_PRESS][2] = NULL;
 			Key_eventFunctionVector[KEY_EVENT_PRESS][3] = LineTracing_Key3_StartTracking;
-			// Key_eventFunctionVector[KEY_EVENT_PRESS][4] = NULL;
+			Key_eventFunctionVector[KEY_EVENT_PRESS][4] = LideTracing_Key4_StartRush;
 			// Key_eventFunctionVector[KEY_EVENT_PRESS][5] = NULL;
 			// Key_eventFunctionVector[KEY_EVENT_PRESS][6] = NULL;
 		

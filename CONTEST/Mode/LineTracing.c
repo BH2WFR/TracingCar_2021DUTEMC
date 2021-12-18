@@ -7,7 +7,8 @@
 #include "UART0.h"
 #include "Motor.h"
 #include "TracingSensor.h"
-
+#include "Beep.h"
+#include "Beep_song.h"
 
 /*	========================按键GPIO说明==================
 
@@ -15,15 +16,16 @@
 */
 //========================== 私有宏定义 Private Macros ===========================
 
-
+#define ssrln Sensor.features.trackingLine
 
 
 
 //===================== 公有全局变量 Public Global Variables =====================
 
-bool isTracking = false;
+//bool isTracking = false;
 
-
+// bool 		isRushMode = false;
+// uint64_t  rushModeStartPIDCount = 0;
 
 //==================== 私有全局变量 Private Global Variables =====================
 
@@ -35,14 +37,44 @@ bool isTracking = false;
 
 //========================= 公有函数  Public Functions ===========================
 
+void LideTracing_Key4_StartRush(void)
+{
+	if(Sensor.enableTracing == true){
+		// 停止
+		ssrln.fastMode.enable = false;
+		//ssrln.fastMode.enable = false;
+		
+		Beep_StopMusic();
+		Sensor_StopTracing();
+		LED2_switch(LED2_COLOUR_BLACK);		
+		
+	}else{
+		// 开始
+		
+		ssrln.fastMode.enable = true;
+		ssrln.fastMode.start_PIDCount = PID_count;
+		ssrln.fastMode.goSlowAfterCount = true;
+		ssrln.fastMode.stop_PIDCount = ssrln.fastMode.start_PIDCount + ssrln.fastMode.slow_PIDDuringCount;
+		
+		Beep_PlayMusic(&music_ErQuanYingYue);
+		Sensor_StartTracing();
+		LED2_switch(LED2_COLOUR_GREEN);		
+	}
+}
 
 void LineTracing_Key3_StartTracking(void)
 {
 	
 	if(Sensor.enableTracing == true){ 
+		ssrln.fastMode.enable = false;
+		
+		Beep_StopMusic();
 		Sensor_StopTracing();
 		LED2_switch(LED2_COLOUR_BLACK);
+		
 	}else{	// Sensor.enableTracing == false;
+		ssrln.fastMode.enable = false;
+		Beep_PlayMusic(&music_ErQuanYingYue);
 		Sensor_StartTracing();
 		LED2_switch(LED2_COLOUR_GREEN);
 	}
@@ -76,6 +108,11 @@ void LineTracing_Cycle(void)
 	
 	count++;
 	
+	if((ssrln.fastMode.enable == true) && (PID_count >= ssrln.fastMode.stop_PIDCount)){
+		ssrln.fastMode.enable = false;
+	}
+	
+	
 	if(count % 1000u == 0){
 		//显示标题
 		OLED_PrintString(Interface_modeConfig.name, 0, 0, OLED_TYPE_6X8, true);	
@@ -101,6 +138,12 @@ void LineTracing_Cycle(void)
 		}else{
 			OLED_PrintSpace(11u, 54, 7, OLED_TYPE_6X8, false);
 			//OLED_PrintString("           ", 54, 7, OLED_TYPE_6X8, false);
+		}
+		
+		if(ssrln.fastMode.enable == true){
+			OLED_PrintString("R", 1, 7, OLED_TYPE_6X8, true);
+		}else{
+			OLED_PrintString(" ", 1, 7, OLED_TYPE_6X8, false);
 		}
 	}
 	

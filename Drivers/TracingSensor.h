@@ -53,6 +53,9 @@
 
 #define TRACKING_BASIC_SPEED	50.0f		// Sensor.trackingLine.basicSpeed 循迹 基本直线速度
 #define TRACKING_SPEED_COORD	0.020f	// Sensor.trackingLine.speedCoord 循迹 转向系数，即 传感器位置和 电机差速的关系
+#define TRACKING_FAST_SPEED		70.0f
+#define TRACKING_FAST_SLOW_ENABLE	1	// 是否 快速巡线一段时间后 恢复 慢速巡线 .fastMode.goSlowAfterCount
+#define TRACKING_FAST_DURATION	50u
 #define TRACKING_DIR_INVERSE	1			// 	是否翻转方向
 
 #define SENSOR_CROSS_DETECT_ENABLE			false	// 十字路口检测 使能
@@ -87,6 +90,22 @@ typedef struct{
 			float 	speedCoord;
 			bool	inverseDir;		// 寻迹方向：==1 时 相反
 			void 	(*Action)(float);
+			
+			struct{
+				bool enable;
+				
+				bool goSlowAfterCount;
+				uint32_t slow_PIDDuringCount;	// 用户自行更改，写入结束的时候PID循环经过几次？单位： 10ms
+				
+				uint64_t start_PIDCount;			// 用户不可更改，写入开始的时候PID循环次数
+				uint64_t stop_PIDCount;				// 用户不可更改，写入结束的时候PID循环次数
+				
+				float basicSpeed;
+				
+			}fastMode;
+
+			
+			
 		}trackingLine;
 		
 		struct{

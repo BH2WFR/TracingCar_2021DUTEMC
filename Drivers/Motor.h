@@ -240,6 +240,7 @@ typedef struct{
 //============== 公有全局变量声明 Public Global Variables Defines ===============
 
 extern Motor_Typedef Motor[MOTOR_AMOUNT];
+extern uint64_t PID_count;
 
 //================== 公有函数声明 Public Function Defines =======================
 

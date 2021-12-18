@@ -17,7 +17,7 @@
 //#include <setjmp.h>		//跳转函数
 //#include <stdarg.h>		//变参函数使用
 //#include <time.h>			//
-//#include <errno.h>		//
+ //#include <errno.h>		//
 //#include <stddef.h>		//
 //#include <limits.h>		//里面有各种变量的最大值/最小值定义
 //#include <float.h>		//
@@ -44,6 +44,7 @@ extern const Beep_note_typedef music_Start[];
 extern const Beep_note_typedef music_Button[];
 extern const Beep_note_typedef music_UndefinedButton[];
 extern const Beep_note_typedef music_ChangeMode[];
+extern const Beep_note_typedef music_ErQuanYingYue[];
 //================== 公有函数声明 Public Function Defines =======================
 
 

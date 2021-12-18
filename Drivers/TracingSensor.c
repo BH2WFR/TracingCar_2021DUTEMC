@@ -85,11 +85,20 @@ __weak void TrackingLine(float offset)
 	
 	float dif_raw = 0;	// < 0 : turn left,   > 0 : turn right
 	float dif_final = 0;
-	
+	float basicSpeed = 0;
 	
 	//==== 偏差：+44 mm（右） -> 速度：30 -> 系数：0.0113636f ---> 差速：+15（右）
-	dif_raw =  offset * Sensor.features.trackingLine.basicSpeed * Sensor.features.trackingLine.speedCoord;
+	if(Sensor.features.trackingLine.fastMode.enable == false){
+		// 慢速模式
+		basicSpeed = Sensor.features.trackingLine.basicSpeed;
+		
+	}else{
+		// 快速模式
+		basicSpeed = Sensor.features.trackingLine.fastMode.basicSpeed;
+	}
 	
+	//==== 获取 速度差值
+	dif_raw =  offset * basicSpeed * Sensor.features.trackingLine.speedCoord;
 	
 	
 	//==== PID 巡线
@@ -108,20 +117,20 @@ __weak void TrackingLine(float offset)
 	#ifdef __MOTOR_H__
 		if(Sensor.features.trackingLine.inverseDir == true){
 			if(Motor[0].enable == true){
-				Motor[0].PID.setPoint = Sensor.features.trackingLine.basicSpeed - dif_final;
+				Motor[0].PID.setPoint = basicSpeed - dif_final;
 			}
 			
 			if(Motor[1].enable == true){
-				Motor[1].PID.setPoint = Sensor.features.trackingLine.basicSpeed + dif_final;	
+				Motor[1].PID.setPoint = basicSpeed + dif_final;	
 			}		
 			
 		}else{ // Sensor.features.trackingLine.inverseDir == false
 			if(Motor[0].enable == true){
-				Motor[0].PID.setPoint = Sensor.features.trackingLine.basicSpeed + dif_final;
+				Motor[0].PID.setPoint = basicSpeed + dif_final;
 			}
 			
 			if(Motor[1].enable == true){
-				Motor[1].PID.setPoint = Sensor.features.trackingLine.basicSpeed - dif_final;	
+				Motor[1].PID.setPoint = basicSpeed - dif_final;	
 			}		
 		}
 	#endif
@@ -433,6 +442,10 @@ static void initStruct_Sensor(Sensors_typedef* p_sensor)
 	p_sensor->features.trackingLine.basicSpeed		= TRACKING_BASIC_SPEED;
 	p_sensor->features.trackingLine.speedCoord		= TRACKING_SPEED_COORD;
 	p_sensor->features.trackingLine.inverseDir 		= TRACKING_DIR_INVERSE;
+	p_sensor->features.trackingLine.fastMode.enable = false;
+	p_sensor->features.trackingLine.fastMode.basicSpeed = TRACKING_FAST_SPEED;
+	p_sensor->features.trackingLine.fastMode.goSlowAfterCount = TRACKING_FAST_SLOW_ENABLE;
+	p_sensor->features.trackingLine.fastMode.slow_PIDDuringCount = TRACKING_FAST_DURATION;
 	p_sensor->features.trackingLine.Action			= TrackingLine;
 	
 	p_sensor->features.crossRecognition.enable 		= SENSOR_CROSS_DETECT_ENABLE;

@@ -328,6 +328,9 @@ void Beep_StopMusic(void)
 {
 	TIMER32_CMSIS(BEEP_TIMER32_BASE)->CONTROL &= ~TIMER32_CONTROL_ENABLE;	//关闭Timer32
 	
+	
+	GPIO_setAsInputPin(BEEP_GPIO_PORT, BEEP_GPIO_PIN);	// GPIO 禁用输出
+	
 	if(g_isPlayingNote == true){
 		TIMER_A_CMSIS(BEEP_TIMER_A_BASE)->CTL &= ~TIMER_A_CTL_MC_3;	//关闭 TimerA			
 		TIMER_A_CMSIS(BEEP_TIMER_A_BASE)->R = 0x0000;	// TimerA 计数值 清零，以使比较模式GPIO口输出低电平，保护蜂鸣器		
@@ -335,6 +338,7 @@ void Beep_StopMusic(void)
 	
 	Beep_p_currentMusic = Beep_p_currentNote = (void*)NULL;
 	g_isPlayingMusic = g_isPlayingNote = false;
+
 
 
 }
@@ -354,7 +358,7 @@ void Beep_PlayMusic(Beep_note_typedef* p_music)
 	Beep_p_currentMusic = Beep_p_currentNote = p_music;	//给指针赋值
 	Beep_p_currentMusic = p_music;
 	Beep_p_currentNote = (p_music + 1);
-	
+	GPIO_setAsPeripheralModuleFunctionOutputPin(BEEP_GPIO_PORT, BEEP_GPIO_PIN, GPIO_PRIMARY_MODULE_FUNCTION);
 		//播放第一个音符(或速度设置指令), 开启timer32中断
 	ReadNote(&Beep_p_currentNote);
 }
@@ -369,7 +373,8 @@ void Beep_PlayMusic(Beep_note_typedef* p_music)
 void Beep_Init(uint32_t speed)
 {
 	//	P2.4 TA0.1
-	GPIO_setAsPeripheralModuleFunctionOutputPin(BEEP_GPIO_PORT, BEEP_GPIO_PIN, GPIO_PRIMARY_MODULE_FUNCTION);
+	GPIO_setAsInputPin(BEEP_GPIO_PORT, BEEP_GPIO_PIN);	// 不启用 GPIO 复用，播放音乐的时候启用
+	GPIO_setDriveStrengthHigh(BEEP_GPIO_PORT, BEEP_GPIO_PIN);
 	//GPIO_setAsOutputPin(BEEP_GPIO_PORT, BEEP_GPIO_PIN);
 	Timer_A_configureUpMode(BEEP_TIMER_A_BASE, &TimerA0_upConfig);
 	Timer_A_initCompare(BEEP_TIMER_A_BASE, &compareConfig_PWM0_1);

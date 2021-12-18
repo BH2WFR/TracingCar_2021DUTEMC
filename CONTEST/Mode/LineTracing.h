@@ -41,7 +41,7 @@
 
 //====================== 公有宏定义 Public Macros ===============================
 
-
+#define LINETRACING_RUSH_PID_COUNT	100u
 
 //============== 公有全局变量声明 Public Global Variables Defines ===============
 extern bool isTracking;
@@ -51,6 +51,7 @@ extern bool isTracking;
 
 //================== 公有函数声明 Public Function Defines =======================
 extern void LineTracing_Key3_StartTracking(void);
+extern void LideTracing_Key4_StartRush(void);
 
 extern void LineTracing_init(void);
 extern void LineTracing_Cycle(void);

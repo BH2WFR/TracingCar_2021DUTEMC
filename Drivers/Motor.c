@@ -28,6 +28,8 @@
 //===================== 公有全局变量 Public Global Variables =====================
 
 Motor_Typedef Motor[MOTOR_AMOUNT] = {0};	// （重要）电机配置结构体，内含 PID 结构体，注意是个数组
+uint64_t PID_count = 0;
+
 
 // int16_t Motor_PWM_CCRx_register[MOTOR_AMOUNT][2] = {
 // 		[0][0] = TIMER_A_CMSIS(MOTOR_0_PWM_TIMER_BASE)->CCR[MOTOR_0_PWM_A_CCRx],
@@ -760,9 +762,9 @@ void MOTOR_ENCODER_IRQHandler(void)
 void MOTOR_PID_TIMER_IRQHandler(void)
 {
 	Timer_A_clearCaptureCompareInterrupt(MOTOR_PID_TIMER_BASE, TIMER_A_CAPTURECOMPARE_REGISTER_0);	// 清除中断
-	static uint64_t count = 0;	// 中断次数计数，可能是没用的一个变量 (逃
+	//static uint64_t count = 0;	// 中断次数计数，可能是没用的一个变量 (逃
 	
-	count++;
+	PID_count++;
 	
 	//===== 电机
 	for(uint8_t i = 0; i < MOTOR_AMOUNT; i++){
